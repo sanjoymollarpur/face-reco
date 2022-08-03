@@ -48,8 +48,8 @@ class Face_Recognition_System:
         left_frame1=LabelFrame(left_frame, bd=2, bg='white', relief=RIDGE, text="Current Course", font=("times new roman", 12, "bold"))
         left_frame1.place(x=4, y=104, width=530, height=130)
         
-        dep_label=Label(left_frame1, text="Deparment", font=("times new roman", 12, "bold"))
-        # dep_label.gird(row=0, column=0)
+        dep_label=Label(left_frame1, text="Department", font=("times new roman", 12, "bold"))
+        dep_label.grid(row = 0, column = 1, pady = 2)
 
         right_frame=LabelFrame(main_frame, bd=2, bg='white', relief=RIDGE, text="Student Details", font=("times new roman", 12, "bold"))
         right_frame.place(x=570, y=10, width=550, height=500)
