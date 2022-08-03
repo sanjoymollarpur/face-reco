@@ -2,12 +2,12 @@ from tkinter import*
 from tkinter import ttk 
 from PIL import Image, ImageTk
 from tkinter import messagebox
-
+import mysql.connector as connection
 
 class Student:
     def __init__(self, root):
         self.root=root
-        self.root.geometry("1200x690+0+0")
+        self.root.geometry("1230x730+0+0")
         self.root.title("face reco system")
         
         # variable
@@ -64,10 +64,10 @@ class Student:
         self.photoimg4=ImageTk.PhotoImage(img4)
 
         f_lb4=Label(left_frame, image=self.photoimg4)
-        f_lb4.place(x=4, y=0, width=500, height=100)
+        f_lb4.place(x=4, y=0, width=500, height=70)
 
         current_course_frame=LabelFrame(left_frame, bd=2, bg='white', relief=RIDGE, text="Current Course", font=("times new roman", 12, "bold"))
-        current_course_frame.place(x=4, y=104, width=530, height=100)
+        current_course_frame.place(x=4, y=80, width=530, height=100)
         
         dep_label=Label(current_course_frame, text="Department", font=("times new roman", 12, "bold"), bg="white")
         dep_label.grid(row = 0, column = 0, padx=2, sticky=W)
@@ -107,7 +107,7 @@ class Student:
         semester_combo.grid(row=1,column=3, padx=2, pady=4, sticky=W)
 
         class_student_frame=LabelFrame(left_frame, bd=2, bg='white', relief=RIDGE, text="Class Student information", font=("times new roman", 12, "bold"))
-        class_student_frame.place(x=4, y=204, width=530, height=260)
+        class_student_frame.place(x=4, y=185, width=530, height=300)
         
         studentId_label=Label(class_student_frame, text="StudentID", font=("times new roman", 12, "bold"), bg="white")
         studentId_label.grid(row = 0, column = 0, padx=2, sticky=W)
@@ -164,18 +164,18 @@ class Student:
 
         #radio button
         self.var_radio1=StringVar()
-        radiobtn1=ttk.Radiobutton(class_student_frame,textvariable=self.var_radio1, text="Take Photo Sample", value="Yes")
+        radiobtn1=ttk.Radiobutton(class_student_frame,variable=self.var_radio1, text="Take Photo Sample", value="Yes")
         radiobtn1.grid(row=6, column=0)
         
-        self.var_radio2=StringVar()
-        radiobtn2=ttk.Radiobutton(class_student_frame,textvariable=self.var_radio2, text="No photo sample", value="No")
+        
+        radiobtn2=ttk.Radiobutton(class_student_frame,variable=self.var_radio1, text="No photo sample", value="No")
         radiobtn2.grid(row=6, column=1)
 
 
         #button frames
 
         btn_frame=Frame(class_student_frame, bd=2, relief=RIDGE)
-        btn_frame.place(x=2, y=140, width=520, height=80)
+        btn_frame.place(x=2, y=160, width=520, height=80)
         
         save_btn=Button(btn_frame, text="Save",command=self.add_data,font=("times new roman", 12, "bold"), bg="blue", fg="white", width=15)
         save_btn.grid(row=0, column=0)
@@ -287,7 +287,36 @@ class Student:
         if self.var_dep.get()=="Select Department" or self.var_std_name.get()=="" or self.var_std_id.get=="":
             messagebox.showerror("Error", "All Fields are required", parent=self.root)
         else:
-            messagebox.showinfo("Success","Welcome to")
+            # messagebox.showinfo("Success","Welcome to")
+            try:
+                conn = connection.connect(host="localhost",user="root", database="student1", use_pure=True)
+                my_cursor=conn.cursor()
+                my_cursor.execute("insert into StudentDetails values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (
+                    self.var_dep.get(),
+                    self.var_course.get(),
+                    self.var_year.get(),
+                    self.var_semester.get(),
+                    self.var_std_id.get(),
+                    self.var_std_name.get(),
+                    self.var_div.get(),
+                    self.var_roll.get(),
+                    self.var_gender.get(),
+                    self.var_dob.get(),
+                    self.var_email.get(),
+                    self.var_phone.get(),
+                    self.var_address.get(),
+                    self.var_teacher.get(),
+                    self.var_radio1.get()
+                )) 
+                conn.commit()
+                conn.close()
+                messagebox.showinfo("Success","Student details has been added successfully", parent=self.root)
+            except Exception as e:
+                messagebox.showerror("Error", f"Due To :{str(e)}", parent=self.root)
+
+
+
+
         
 
 
