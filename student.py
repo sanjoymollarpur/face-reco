@@ -48,8 +48,17 @@ class Face_Recognition_System:
         left_frame1=LabelFrame(left_frame, bd=2, bg='white', relief=RIDGE, text="Current Course", font=("times new roman", 12, "bold"))
         left_frame1.place(x=4, y=104, width=530, height=130)
         
-        dep_label=Label(left_frame1, text="Department", font=("times new roman", 12, "bold"))
-        dep_label.grid(row = 0, column = 1, pady = 2)
+        dep_label=Label(left_frame1, text="Department", font=("times new roman", 12, "bold"), bg="white")
+        dep_label.grid(row = 0, column = 0, padx=2)
+
+
+        dep_combo=ttk.Combobox(left_frame1, font=("times new roman", 12, "bold"), state="read only")
+        dep_combo['values']=("Select Department", "Computer", "IT", "Civil", "Mechnical")
+        dep_combo.current(0)
+        dep_combo.grid(row=0,column=1, padx=2, pady=4)
+
+
+
 
         right_frame=LabelFrame(main_frame, bd=2, bg='white', relief=RIDGE, text="Student Details", font=("times new roman", 12, "bold"))
         right_frame.place(x=570, y=10, width=550, height=500)
