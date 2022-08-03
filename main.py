@@ -112,7 +112,8 @@ class Face_Recognition_System:
         b11.place(x=843, y=450, width=200, height=20)
  
 
-        # Function Button 
+        # Function Button hifi
+        # testing my laptop
 
     def student_details(self):
          self.new_window=Toplevel(self.root)
