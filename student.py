@@ -180,7 +180,7 @@ class Student:
         save_btn=Button(btn_frame, text="Save",command=self.add_data,font=("times new roman", 12, "bold"), bg="blue", fg="white", width=15)
         save_btn.grid(row=0, column=0)
 
-        update_btn=Button(btn_frame, text="Update",font=("times new roman", 12, "bold"), bg="blue", fg="white", width=15)
+        update_btn=Button(btn_frame, text="Update",command=self.update_data,font=("times new roman", 12, "bold"), bg="blue", fg="white", width=15)
         update_btn.grid(row=0, column=1)
 
         delete_btn=Button(btn_frame, text="Delete",font=("times new roman", 12, "bold"), bg="blue", fg="white", width=15)
@@ -238,7 +238,7 @@ class Student:
         scroll_x=ttk.Scrollbar(table_frame, orient=HORIZONTAL)
         scroll_y=ttk.Scrollbar(table_frame, orient=VERTICAL)
 
-        self.student_table=ttk.Treeview(table_frame, column=("dep", "course", "year", "sem", "id", "name", "div", "roll","phone", "gender", "dob","email","address", "teacher", "photo"), xscrollcommand=scroll_x.set, yscrollcommand=scroll_y.set)
+        self.student_table=ttk.Treeview(table_frame, column=("dep", "course", "year", "sem", "id", "name", "div", "roll","gender","dob","email", "phone","address", "teacher", "photo"), xscrollcommand=scroll_x.set, yscrollcommand=scroll_y.set)
 
         scroll_x.pack(side=BOTTOM, fill=X)
         scroll_y.pack(side=RIGHT, fill=Y)
@@ -280,7 +280,8 @@ class Student:
         self.student_table.column("photo", width=100)
         
         self.student_table.pack(fill=BOTH, expand=1)
-        
+        self.student_table.bind("<ButtonRelease>", self.get_cursor)
+        self.fetch_data()
 
         #function declaration
     def add_data(self):
@@ -309,14 +310,82 @@ class Student:
                     self.var_radio1.get()
                 )) 
                 conn.commit()
+                self.fetch_data()
                 conn.close()
                 messagebox.showinfo("Success","Student details has been added successfully", parent=self.root)
             except Exception as e:
                 messagebox.showerror("Error", f"Due To :{str(e)}", parent=self.root)
 
+    def fetch_data(self):
+        conn = connection.connect(host="localhost",user="root", database="student1", use_pure=True)
+        my_cursor=conn.cursor()
+        my_cursor.execute("select * from StudentDetails")
+        data=my_cursor.fetchall()
+
+        if len(data)!=0:
+            self.student_table.delete(*self.student_table.get_children())
+            for i in data:
+                self.student_table.insert("", END, values=i)
+            conn.commit()
+        conn.close()
 
 
+    def get_cursor(self, event=""):
+        cursor_focus=self.student_table.focus()
+        content=self.student_table.item(cursor_focus)
+        data=content["values"]
+        self.var_dep.set(data[0]),
+        self.var_course.set(data[1]),
+        self.var_year.set(data[2]),
+        self.var_semester.set(data[3]),
+        self.var_std_id.set(data[4]),
+        self.var_std_name.set(data[5]),
+        self.var_div.set(data[6]),
+        self.var_roll.set(data[7]),
+        self.var_gender.set(data[8]),
+        self.var_dob.set(data[9]),
+        self.var_email.set(data[10]),
+        self.var_phone.set(data[11]),
+        self.var_address.set(data[12]),
+        self.var_teacher.set(data[13]),
+        self.var_radio1.set(data[14])       
 
+    def update_data(self):
+        if self.var_dep.get()=="Select Department" or self.var_std_name.get()=="" or self.var_std_id.get=="":
+            messagebox.showerror("Error", "All Fields are required", parent=self.root)
+
+        else:
+            try:
+                update=messagebox.askyesno("Update", "Do you want to update student details", parent=self.root)
+                if update>0:
+                    conn = connection.connect(host="localhost",user="root", database="student1", use_pure=True)
+                    my_cursor=conn.cursor()
+                    my_cursor.execute("update StudentDetails set Dep=%s, Course=%s, Year=%s, Semester=%s,Name=%s, Division=%s, Roll=%s, Gender=%s,Dob=%s,Email=%s,Phone=%s, Address=%s, Teacher=%s, PhotoSample=%s where Studentid=%s",(
+                    self.var_dep.get(),
+                    self.var_course.get(),
+                    self.var_year.get(),
+                    self.var_semester.get(),
+                    self.var_std_name.get(),
+                    self.var_div.get(),
+                    self.var_roll.get(),
+                    self.var_gender.get(),
+                    self.var_dob.get(),
+                    self.var_email.get(),
+                    self.var_phone.get(),
+                    self.var_address.get(),
+                    self.var_teacher.get(),
+                    self.var_radio1.get(),
+                    self.var_std_id.get()
+                    ))
+                else:
+                    if not update:
+                        return
+                messagebox.showinfo("success","Student details successfully update completed",parent=self.root )
+                conn.commit()
+                self.fetch_data()
+                conn.close()
+            except Exception as e:
+                messagebox.showerror("Error", f"Duo to: {str(e)}", parent=self.root)
         
 
 
