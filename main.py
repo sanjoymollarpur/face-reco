@@ -5,6 +5,7 @@ from student import Student
 import os
 import subprocess, sys
 from train import train 
+from face_recognition import face_reco
 
 class Face_Recognition_System:
     def __init__(self, root):
@@ -50,10 +51,10 @@ class Face_Recognition_System:
         img5=img5.resize((200,100))
         self.photoimg5=ImageTk.PhotoImage(img5)
 
-        b2=Button(self.root, image=self.photoimg5, cursor="hand2")
+        b2=Button(self.root, image=self.photoimg5, command=self.face_data, cursor="hand2")
         b2.place(x=353, y=200, width=200, height=100)
 
-        b2=Button(self.root, text="Face Detector", cursor="hand2")
+        b2=Button(self.root, text="Face Detector", command=self.face_data, cursor="hand2")
         b2.place(x=353, y=300, width=200, height=20)
 
         img6=Image.open("colleges_images/6.jpeg")
@@ -129,6 +130,10 @@ class Face_Recognition_System:
     def train_data(self):
          self.new_window=Toplevel(self.root)
          self.app=train(self.new_window)
+
+    def face_data(self):
+         self.new_window=Toplevel(self.root)
+         self.app=face_reco(self.new_window)
 
 
 
