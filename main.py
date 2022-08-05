@@ -2,7 +2,9 @@ from tkinter import*
 from tkinter import ttk 
 from PIL import Image, ImageTk
 from student import Student
-
+import os
+import subprocess, sys
+from train import train 
 
 class Face_Recognition_System:
     def __init__(self, root):
@@ -77,20 +79,20 @@ class Face_Recognition_System:
         img8=img8.resize((200,100))
         self.photoimg8=ImageTk.PhotoImage(img8)
 
-        b8=Button(self.root, image=self.photoimg8, cursor="hand2")
+        b8=Button(self.root, image=self.photoimg8, command=self.train_data, cursor="hand2")
         b8.place(x=102, y=350, width=200, height=100)
 
-        b8=Button(self.root, text="Train Data", cursor="hand2")
+        b8=Button(self.root, text="Train Data",command=self.train_data, cursor="hand2")
         b8.place(x=102, y=450, width=200, height=20)
 
         img9=Image.open("colleges_images/9.jpeg")
         img9=img9.resize((200,100))
         self.photoimg9=ImageTk.PhotoImage(img9)
 
-        b9=Button(self.root, image=self.photoimg9, cursor="hand2")
+        b9=Button(self.root, image=self.photoimg9, command=self.open_img, cursor="hand2")
         b9.place(x=353, y=350, width=200, height=100)
 
-        b9=Button(self.root, text="Photos", cursor="hand2")
+        b9=Button(self.root, text="Photos", command=self.open_img, cursor="hand2")
         b9.place(x=353, y=450, width=200, height=20)
 
         img10=Image.open("colleges_images/11.jpeg")
@@ -115,9 +117,18 @@ class Face_Recognition_System:
         # Function Button hifi
         # testing my laptop
 
+    def open_img(self):
+        # os.startfile("data")
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, "data"])
+
     def student_details(self):
          self.new_window=Toplevel(self.root)
          self.app=Student(self.new_window)
+
+    def train_data(self):
+         self.new_window=Toplevel(self.root)
+         self.app=train(self.new_window)
 
 
 
