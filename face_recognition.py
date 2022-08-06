@@ -8,6 +8,8 @@ import cv2
 import numpy as np
 from tkinter import messagebox
 import mysql.connector as connection
+from time import strftime
+from datetime import datetime
 
 
 class face_reco:
@@ -50,34 +52,64 @@ class face_reco:
         b1=Button(self.root, text="Face Reco",command=self.face_recognition1, cursor="hand2")
         b1.place(x=102, y=300, width=200, height=20)
 
+
+
+
+    # attendance
+
+    def mark_attendance(self,i, r, n,d):
+        with open("sanjoy.csv","r+", newline="\n") as f:
+            mydatalist=f.readlines()
+            name_list=[]
+            for line in mydatalist:
+                entry=line.split((","))
+                name_list.append(entry[0])
+            if((i not in name_list) and (r not in name_list) and (n not in name_list) and (d not in name_list)):
+                now=datetime.now()
+                d1=now.strftime("%d/%m/%y")
+                dtString=now.strftime("%H:%M:%S")
+                f.writelines(f"\n{i}, {r}, {n}, {d}, {dtString}, {d1}, Present")
+
+
+
+
+
+
     #face recognition
 
     def face_recognition1(self):
         def draw_boundray(img, classifier, scaleFactor, minNeigh, color, text, clf):
-            gray_image=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            # gray_image=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            gray_image=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY )
             features=classifier.detectMultiScale(gray_image, scaleFactor, minNeigh)
 
             coord=[]
 
             for (x,y,w,h) in features:
-                cv2.reactangle(img, (x,y),(x+w,y+h),(0,255,0),2)
-                id,predict=clf.predict(gray_image[y:y+h,x:x+w])
+                cv2.rectangle(img, (x,y),(x+w,y+h),(0,255,0),2)
+                id1,predict=clf.predict(gray_image[y:y+h,x:x+w])
                 confidence=int(100*(1-predict/300))
 
                 conn = connection.connect(host="localhost",user="root", database="student1", use_pure=True)
                 my_cursor=conn.cursor()
-
-                my_cursor.execute("select Name from StudentDetails where Studendid="+str(id))
-                n=my_cursor.fectchone()
+                print(id1)
+                
+                my_cursor.execute("select Name from StudentDetails where Studentid="+str(id1))
+                n=my_cursor.fetchone()
+                print(n)
                 n="+".join(n)
 
-                my_cursor.execute("select Roll from StudentDetails where Studendid="+str(id))
-                r=my_cursor.fectchone()
+                my_cursor.execute("select Roll from StudentDetails where Studentid="+str(id1))
+                r=my_cursor.fetchone()
                 r="+".join(r)
 
-                my_cursor.execute("select Dep from StudentDetails where Studendid="+str(id))
-                d=my_cursor.fectchone()
+                my_cursor.execute("select Dep from StudentDetails where Studentid="+str(id1))
+                d=my_cursor.fetchone()
                 d="+".join(d)
+
+                my_cursor.execute("select Studentid from StudentDetails where Studentid="+str(id1))
+                i=my_cursor.fetchone()
+                # i="+".join(i)
 
 
 
@@ -85,11 +117,13 @@ class face_reco:
 
 
                 if confidence>77:
-                    cv2.putText(img, f"Roll:{r}", (x,y-45), cv2.FONT_HERSHEY_COMPLEX, 0.8,(25,255,0),2)
-                    cv2.putText(img, f"Name:{n}", (x,y-35), cv2.FONT_HERSHEY_COMPLEX, 0.8,(25,255,0),2)
-                    cv2.putText(img, f"Dep:{d}", (x,y-25), cv2.FONT_HERSHEY_COMPLEX, 0.8,(25,255,0),2)
+                    cv2.putText(img, f"id:{i}", (x,y-45), cv2.FONT_HERSHEY_COMPLEX, 0.8,(25,255,0),1)
+                    cv2.putText(img, f"Roll:{r}", (x,y-35), cv2.FONT_HERSHEY_COMPLEX, 0.8,(25,255,0),1)
+                    cv2.putText(img, f"Name:{n}", (x,y-20), cv2.FONT_HERSHEY_COMPLEX, 0.8,(25,255,0),1)
+                    cv2.putText(img, f"Dep:{d}", (x,y-5), cv2.FONT_HERSHEY_COMPLEX, 0.8,(25,255,0),1)
+                    self.mark_attendance(i,r,n,d)
                 else:
-                    cv2.reactangle(img, (x,y),(x+w,y+h),(0,0,255),2)
+                    cv2.rectangle(img, (x,y),(x+w,y+h),(0,0,255),2)
                     cv2.putText(img, "Unknown Face", (x,y-45), cv2.FONT_HERSHEY_COMPLEX, 0.8,(25,255,0),2)
                 
                 coord=[x,y,w,h]
@@ -108,14 +142,16 @@ class face_reco:
 
         while True:
             ret, img=video_cap.read()
+            # cv2.imshow("my",img)
             img=recognize(img,clf,faceCascade)
             cv2.imshow("welcome to face reco", img)
 
             if cv2.waitKey(1)==13:
                 break
             
-            video_cap.release()
-            cv2.destroyAllWindows()
+        video_cap.release()
+        cv2.destroyAllWindows()
+
 
 
 
