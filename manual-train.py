@@ -60,7 +60,7 @@ model.compile(loss='categorical_crossentropy',
 
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau
 earlystop = EarlyStopping(patience = 10)
-learning_rate_reduction = ReduceLROnPlateau(monitor = 'val_acc',patience = 2,verbose = 1,factor = 0.5,min_lr = 0.00001)
+learning_rate_reduction = ReduceLROnPlateau(monitor = 'val_acc',patience = 2,verbose = 1,factor = 0.5,min_lr = 0.001)
 callbacks = [earlystop,learning_rate_reduction]
 
 
@@ -92,7 +92,7 @@ train_generator = train_datagen.flow_from_dataframe(train_df,
 validation_datagen = ImageDataGenerator(rescale=1./255)
 validation_generator = validation_datagen.flow_from_dataframe(
     validate_df, 
-    "./data1/", 
+    "./data/", 
     x_col='filename',
     y_col='category',
     target_size=Image_Size,
@@ -100,7 +100,7 @@ validation_generator = validation_datagen.flow_from_dataframe(
     batch_size=batch_size
 )
 
-epochs=10
+epochs=50
 history = model.fit_generator(
     train_generator, 
     epochs=epochs,

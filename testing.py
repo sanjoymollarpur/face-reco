@@ -3,13 +3,13 @@ from tkinter import filedialog
 from tkinter import *
 from PIL import ImageTk, Image
 import numpy as np
-
+import cv2
 from keras.models import load_model
 model = load_model('weight-save.h5')
 
 classes = { 
-    2:'its a cat',
-    1:'its a dog',
+    0:'its a Dhoni',
+    1:'its a Sanjoy',
 }
 
 
@@ -32,7 +32,9 @@ def classify(file_path):
     image = image/255
     # pred = model.predict_classes([image])[0]
     predict_x=model.predict(image) 
+    print(predict_x)
     classes_x=np.argmax(predict_x,axis=1)
+    print(classes_x)
     print(classes_x[0])
     sign = classes[classes_x[0]]
     print(sign)
