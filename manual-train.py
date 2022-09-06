@@ -13,7 +13,7 @@ Image_Size=(Image_Width,Image_Height)
 Image_Channels=3
 
 
-filenames=os.listdir("data1")
+filenames=os.listdir("data")
 categories=[]
 for f_name in filenames:
     # print(f_name)
@@ -84,7 +84,7 @@ train_datagen = ImageDataGenerator(rotation_range=15,
                                 height_shift_range=0.1
                                 )
 train_generator = train_datagen.flow_from_dataframe(train_df,
-                                                 "data1/",x_col='filename',y_col='category',
+                                                 "data/",x_col='filename',y_col='category',
                                                  target_size=Image_Size,
                                                  class_mode='categorical',
                                                  batch_size=batch_size)
@@ -107,7 +107,7 @@ history = model.fit_generator(
     validation_data=validation_generator,
     validation_steps=total_validate//batch_size,
     steps_per_epoch=total_train//batch_size,
-    callbacks=callbacks
+    # callbacks=callbacks
 )
 
 model.save("weight-save.h5")

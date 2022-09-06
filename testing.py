@@ -8,8 +8,8 @@ from keras.models import load_model
 model = load_model('weight-save.h5')
 
 classes = { 
-    0:'its a Dhoni',
-    1:'its a Sanjoy',
+    0:'its a Sanjoy',
+    1:'its a Dhoni',
 }
 
 
